@@ -1,16 +1,41 @@
 #include "ntfyClient.h"
+#include <vector>
+
+using namespace std;
 
 NtfyClient::NtfyClient(){
-    url = String("https://ntfy.sh/healthcheck/json?poll=1&since=1m");// String(NTFY_DOMAIN) + String(NTFY_TOPIC) + String("/json?poll=1");
+    url = String(NTFY_DOMAIN) + String(NTFY_TOPIC) + String("/json?poll=1");
     //Serial.println(url);
+    http.setAuthorization(NTFY_USER, NTFY_PASS);
     http.begin(client, url);
 };
 
-bool NtfyClient::check_server(){
+vector<String> NtfyClient::check_server(){
     int result = http.GET();
     http.useHTTP10(true);
     Serial.printf("%s Returned %d\n", url, result);
-    Serial.println(http.getStream().readString());
+    String raw_response = http.getStream().readString();
+    String buffer = "";
+    bool append_flag = false;
+    vector<String> response_list;
+
+    for (char c : raw_response) {
+        if (c == '\n') {
+            append_flag = false;
+            response_list.push_back(String(buffer));
+            Serial.println(buffer);
+            buffer = "";
+        }
+        else if (c == '{') {
+            append_flag = true;
+        }
+
+        if (append_flag) {
+            buffer += c;
+        }
+    }
+    
+    return response_list;
 }
 
 bool NtfyClient::connect_wifi(bool debug_boot){
@@ -28,7 +53,7 @@ bool NtfyClient::connect_wifi(bool debug_boot){
     while (WiFi.status() != WL_CONNECTED && attempts < 5) {
       if (debug_boot)
           Serial.println("\tRetrying...");
-      delay(500);
+      delay(250);
       // beep(2);
       WiFi.begin(WIFI_SSID, WIFI_PASS);
       attempts += 1;

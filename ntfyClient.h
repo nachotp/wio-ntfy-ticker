@@ -4,7 +4,9 @@
 #include "secrets.h"
 #include <rpcWiFi.h>
 #include <HTTPClient.h>
+#include <vector>
 
+using namespace std;
 
 class NtfyClient {
     public:
@@ -14,7 +16,7 @@ class NtfyClient {
         
         NtfyClient();
         bool connect_wifi(bool debug_boot);
-        bool check_server();
+        vector<String> check_server();
 };
 
 #endif
