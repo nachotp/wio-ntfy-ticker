@@ -1,4 +1,3 @@
-#include <ArduinoJson.h>
 #include "tickerUI.h"
 #include "ntfyClient.h"
 #include <vector>

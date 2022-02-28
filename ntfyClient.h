@@ -4,9 +4,13 @@
 #include "secrets.h"
 #include <rpcWiFi.h>
 #include <HTTPClient.h>
+#include <ArduinoJson.h>
 #include <vector>
 
 using namespace std;
+
+typedef vector<DynamicJsonDocument> JsonVector;
+
 
 class NtfyClient {
     public:
