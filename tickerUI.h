@@ -3,11 +3,11 @@
 
 #include "secrets.h"
 #include "TFT_eSPI.h"
+#define SPRITE_WIDTH 80
 
-
+extern TFT_eSPI tft;
 class TickerUI {
     public:
-        TFT_eSPI tft;
         void demo();
 };
 #endif
