@@ -12,19 +12,25 @@ TickerUI ui;
 NtfyClient ntfy;
 
 void setup() {
+	ui.loading_screen();
 	Serial.begin(115200);
 	if (!SD.begin(SDCARD_SS_PIN, SDCARD_SPI)) {
         while (1);
     }
+	ui.loading(33);
 	pinMode(LED_BUILTIN, OUTPUT);
-	ui.demo();
+	
 	if (ntfy.connect_wifi(true)) {
 		tft.println("Connected to Wifi");
 
 	} else {
 		tft.drawCircle(TFT_HEIGHT/2, TFT_WIDTH/2, 5, TFT_RED);
 	}
-
+	ui.loading(66);
+	delay(100);
+	ui.loading(100);
+	tft.fillRect(0, 0, TFT_HEIGHT, TFT_WIDTH, TFT_DARKCYAN);
+	ui.setHeader();
 }
 
 void loop() {
