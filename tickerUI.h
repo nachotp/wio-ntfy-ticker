@@ -9,5 +9,7 @@ extern TFT_eSPI tft;
 class TickerUI {
     public:
         void demo();
+        void notificationBadge(int num);
+        void setMessageboard(String message);
 };
 #endif

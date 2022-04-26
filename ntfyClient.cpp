@@ -16,47 +16,46 @@ vector<String> NtfyClient::check_server(){
     http.useHTTP10(true);
     Serial.print(url);
     Serial.printf(" Returned %d\n", result);
-
-    String raw_response = http.getStream().readString();
-    String buffer = "";
-    bool append_flag = false;
+    
     JsonVector response_json;
     vector<String> response_list;
 
-    for (char c : raw_response) {
-        if (c == '\n' && append_flag) {
-            append_flag = false;
-            DynamicJsonDocument doc(512);
+    if (result == 200) {
+        String raw_response = http.getStream().readString();
+        String buffer = "";
+        bool append_flag = false;
 
-            //Serial.println(buffer);
-            DeserializationError error = deserializeJson(doc, buffer);
-            if (error) {
-                Serial.print(F("deserialization failed: "));
-                Serial.println(error.f_str());
-                Serial.println(buffer);
-                break;
-            } else
-            response_json.push_back(doc);
-            buffer = "";
-            String message = response_json.back()["message"];
-            String message_id = response_json.back()["id"];
-            response_list.push_back(message_id + String(": ") + message);
-            
-            //String payload]
-            
-            deserializeJson(doc, doc["message"]);
-            String payload = doc["weather"];
-            Serial.println(payload);
-        }
-        else if (c == '{') {
-            append_flag = true;
-        }
+        for (char c : raw_response) {
+            if (c == '\n' && append_flag) {
+                append_flag = false;
+                DynamicJsonDocument doc(512);
 
-        if (append_flag) {
-            buffer += c;
+                //Serial.println(buffer);
+                DeserializationError error = deserializeJson(doc, buffer);
+                if (error) {
+                    Serial.print(F("deserialization failed: "));
+                    Serial.println(error.f_str());
+                    Serial.println(buffer);
+                    break;
+                } else
+                response_json.push_back(doc);
+                buffer = "";
+                String message = response_json.back()["message"];
+                String message_id = response_json.back()["id"];
+                response_list.push_back(message_id + String(": ") + message);
+                
+
+                deserializeJson(doc, doc["message"]);
+            }
+            else if (c == '{') {
+                append_flag = true;
+            }
+
+            if (append_flag) {
+                buffer += c;
+            }
         }
     }
-    
     return response_list;
 }
 
