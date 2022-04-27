@@ -18,7 +18,7 @@ void TickerUI::loading(int perc){
   int max_width = TFT_HEIGHT-106;
   for (int i; i <= perc; i++)
     tft.fillRoundRect(53, 163, max_width * i / 100, 24, 5, TFT_WHITE);
-    delay(150);
+    delay(250);
 }
 
 
@@ -36,8 +36,8 @@ void TickerUI::setHeader() {
 }; 
 
 void TickerUI::notificationBadge(int num) {
+    tft.fillCircle(SPRITE_WIDTH/2 + 5, SPRITE_WIDTH/2 + 5, 16, TFT_BLACK);
     tft.fillCircle(SPRITE_WIDTH/2 + 5, SPRITE_WIDTH/2 + 5, 13, TFT_RED);
-    tft.drawCircle(SPRITE_WIDTH/2 + 5, SPRITE_WIDTH/2 + 5, 13, TFT_BLACK);
     tft.drawCentreString(String(num), SPRITE_WIDTH/2 + 5, SPRITE_WIDTH/2 - 5, 4);
 };
 

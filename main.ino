@@ -1,15 +1,22 @@
+#include <vector>
+#include "Seeed_FS.h"
+#include "rawImage.h"
 
 #include "tickerUI.h"
-#include "Seeed_FS.h"
 #include "ntfyClient.h"
-#include <vector>
-#include "rawImage.h"
+//#include "utils.h"
 
 using namespace std;
 
 TFT_eSPI tft;
 TickerUI ui;
 NtfyClient ntfy;
+
+void blink(int times);
+void blink(int times, int delay_val);
+
+vector<String> response_list;
+int response_size;
 
 void setup() {
 	ui.loading_screen();
@@ -27,29 +34,39 @@ void setup() {
 		tft.drawCircle(TFT_HEIGHT/2, TFT_WIDTH/2, 5, TFT_RED);
 	}
 	ui.loading(66);
-	delay(100);
+	response_list = ntfy.check_server();
+	response_size = response_list.size();
 	ui.loading(100);
 	tft.fillRect(0, 0, TFT_HEIGHT, TFT_WIDTH, TFT_DARKCYAN);
 	ui.setHeader();
 }
 
 void loop() {
-	digitalWrite(LED_BUILTIN, HIGH);   // turn the LED on (HIGH is the voltage level)
-	delay(100);                       // wait for a second
-	digitalWrite(LED_BUILTIN, LOW);
-	vector<String> response_list = ntfy.check_server();
-	ui.notificationBadge(response_list.size());
-	tft.setTextPadding(TFT_HEIGHT/3);
+
+	if (response_size > 0){
+		ui.notificationBadge(response_size);
+	}
+	
 	for (String response : response_list) {
 		ui.setMessageboard(response);
-		delay(10000);    
+		delay(5000);    
 	}
-	//tft.setCursor(0,0);
-	digitalWrite(LED_BUILTIN, HIGH);
-	delay(100);   // turn the LED on (HIGH is the voltage level)                   // wait for a second
-	digitalWrite(LED_BUILTIN, LOW);   // turn the LED on (HIGH is the voltage level)
-	delay(100);
-	digitalWrite(LED_BUILTIN, HIGH);   // turn the LED on (HIGH is the voltage level)
-	delay(100);                       // wait for a second
-	digitalWrite(LED_BUILTIN, LOW);
+	
+	blink(3);
+	
+	response_list = ntfy.check_server();
+	response_size = response_list.size();
+}
+
+void blink(int times) {
+    blink(times, 100);
+}
+
+void blink(int times, int delay_val){
+    for (int i = 0; i < times; i++) {
+        digitalWrite(LED_BUILTIN, HIGH);
+        delay(delay_val);  
+        digitalWrite(LED_BUILTIN, LOW); 
+        delay(delay_val);
+    }
 }
