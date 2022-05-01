@@ -15,7 +15,7 @@ NtfyClient ntfy;
 void blink(int times);
 void blink(int times, int delay_val);
 
-vector<String> response_list;
+vector<NtfyMessage> response_list;
 int response_size;
 
 void setup() {
@@ -47,7 +47,7 @@ void loop() {
 		ui.notificationBadge(response_size);
 	}
 	
-	for (String response : response_list) {
+	for (NtfyMessage response : response_list) {
 		ui.setMessageboard(response);
 		delay(5000);    
 	}

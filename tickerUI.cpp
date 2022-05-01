@@ -1,5 +1,6 @@
 #include "rawImage.h"
 #include "tickerUI.h"
+#include "ntfyClient.h"
 
 void TickerUI::loading_screen(){
     tft.begin();
@@ -41,13 +42,17 @@ void TickerUI::notificationBadge(int num) {
     tft.drawCentreString(String(num), SPRITE_WIDTH/2 + 5, SPRITE_WIDTH/2 - 5, 4);
 };
 
-void TickerUI::setMessageboard(String message){
+void TickerUI::setMessageboard(NtfyMessage message){
     tft.fillRoundRect(0, SPRITE_WIDTH + 2, TFT_HEIGHT - 2, TFT_WIDTH - 2 - SPRITE_WIDTH, 10, TFT_WHITE);
     //tft.drawRoundRect(0, 20, 2*TFT_HEIGHT/3 - 20, TFT_WIDTH - 40, 10, TFT_BLACK);
     tft.setCursor(5, SPRITE_WIDTH + 10);
     tft.setTextPadding(25);
     tft.setTextColor(TFT_BLACK);
     tft.setTextFont(2);
-    tft.println(message);
+    tft.print(message.priority);
+    tft.print(" ");
+    tft.println(message.title);
+    tft.setTextFont(2);
+    tft.println(message.message);
     tft.setTextColor(TFT_WHITE);
 }

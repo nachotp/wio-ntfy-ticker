@@ -11,14 +11,14 @@ NtfyClient::NtfyClient(){
     http.begin(client, url);
 };
 
-vector<String> NtfyClient::check_server(){
+vector<NtfyMessage> NtfyClient::check_server(){
     int result = http.GET();
     http.useHTTP10(true);
     Serial.print(url);
     Serial.printf(" Returned %d\n", result);
     
     JsonVector response_json;
-    vector<String> response_list;
+    vector<NtfyMessage> response_list;
 
     if (result == 200) {
         String raw_response = http.getStream().readString();
@@ -40,12 +40,20 @@ vector<String> NtfyClient::check_server(){
                 } else
                 response_json.push_back(doc);
                 buffer = "";
-                String message = response_json.back()["message"];
-                String message_id = response_json.back()["id"];
-                response_list.push_back(message_id + String(": ") + message);
+                //String message = response_json.back()["message"];
+                //String message_id = response_json.back()["id"];
+
+                response_list.push_back(
+                    NtfyMessage(
+                        response_json.back()["id"],
+                        response_json.back()["title"],
+                        response_json.back()["message"],
+                        response_json.back()["priority"]
+                    )
+                );
                 
 
-                deserializeJson(doc, doc["message"]);
+                // deserializeJson(doc, doc["message"]);
             }
             else if (c == '{') {
                 append_flag = true;
@@ -92,3 +100,18 @@ bool NtfyClient::connect_wifi(bool debug_boot){
     }
   
 };
+
+NtfyMessage::NtfyMessage(String nid, String ntitle, String nmessage, String ntags, int npriority) {
+    id = nid;
+    title = ntitle;
+    message = nmessage;
+    tags = ntags;
+    priority = npriority;    
+};
+
+NtfyMessage::NtfyMessage(String nid, String ntitle, String nmessage, int npriority) {
+    id = nid;
+    title = ntitle;
+    message = nmessage;
+    priority = npriority;    
+};              

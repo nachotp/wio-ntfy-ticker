@@ -12,6 +12,20 @@ using namespace std;
 typedef vector<DynamicJsonDocument> JsonVector;
 
 
+class NtfyMessage {
+    public:
+        String id;
+        String message;
+        String title;
+        String tags;
+        int priority;
+
+
+        NtfyMessage(String nid, String ntitle, String nmessage, String ntags, int npriority);
+        NtfyMessage(String nid, String ntitle, String nmessage, int npriority);
+        String str();
+};
+
 class NtfyClient {
     public:
         WiFiClientSecure client;
@@ -20,7 +34,7 @@ class NtfyClient {
         
         NtfyClient();
         bool connect_wifi(bool debug_boot);
-        vector<String> check_server();
+        vector<NtfyMessage> check_server();
 };
 
 #endif
