@@ -11,7 +11,7 @@ NtfyClient::NtfyClient(){
     http.begin(client, url);
 };
 
-vector<NtfyMessage> NtfyClient::check_server(){
+vector<NtfyMessage> NtfyClient::poll_notifications(){
     int result = http.GET();
     http.useHTTP10(true);
     Serial.print(url);
@@ -39,25 +39,30 @@ vector<NtfyMessage> NtfyClient::check_server(){
                 
                     buffer = "";
 
-                    JsonArray tags_array = doc["tags"];
-                    vector<String> tags;
+                    int priority = doc.containsKey("priority") ? doc["priority"].as<int>() : 3;
+                    String title = doc.containsKey("title") ? doc["title"].as<String>() : "";
 
-                    for (JsonVariant tag : tags_array) {
-                        tags.push_back(String((const char *)tag));
-                    } 
+                    vector<String> tags;
+                    if (doc.containsKey("tags")) {
+                        JsonArray tags_array = doc["tags"];
                     
+                        for (JsonVariant tag : tags_array) {
+                            tags.push_back(String((const char *)tag));
+                        } 
+                    }
+                                        
                     response_list.push_back(
                         NtfyMessage(
                             doc["id"],
-                            doc["title"],
+                            title,
                             doc["message"],
                             tags,
-                            doc["priority"]
+                            priority
                         )
                     );
                 
                 }
-                // deserializeJson(doc, doc["message"]);
+                
             }
             else if (c == '{') {
                 append_flag = true;
