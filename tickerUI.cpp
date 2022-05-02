@@ -12,14 +12,13 @@ void TickerUI::loading_screen(){
     tft.drawString("Loading...", 75, 70);
     tft.drawRoundRect(50, 160, TFT_HEIGHT-100, 30, 5, TFT_WHITE);
     delay(100);
-
 }
 
 void TickerUI::loading(int perc){
   int max_width = TFT_HEIGHT-106;
   for (int i; i <= perc; i++)
     tft.fillRoundRect(53, 163, max_width * i / 100, 24, 5, TFT_WHITE);
-    delay(250);
+    delay(350);
 }
 
 
@@ -62,4 +61,25 @@ void TickerUI::setMessageboard(NtfyMessage message){
     tft.setTextFont(2);
     tft.println(message.message);
     tft.setTextColor(TFT_WHITE);
+}
+
+void TickerUI::screenshotSerial(){
+    Serial.println("=== BEGIN SCREENSHOT ARRAY ===");
+    Serial.print("[");
+    for (size_t x = 0; x < TFT_HEIGHT; x++) {
+        Serial.print("[");
+        for (size_t y = 0; y < TFT_WIDTH; y++) {
+            Serial.print(tft.readPixel(x, y));
+            if (y < TFT_WIDTH-1) {
+                Serial.print(",");
+            }
+        }
+        
+        Serial.print("]");
+        if (x < TFT_HEIGHT-1) {
+            Serial.print(",\n");
+        }
+    }
+    Serial.print("\n]\n");
+    Serial.println("=== END SCREENSHOT ARRAY ===");
 }

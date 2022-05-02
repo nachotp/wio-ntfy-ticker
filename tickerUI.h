@@ -14,6 +14,7 @@ class TickerUI {
         void setMessageboard(NtfyMessage message);
         void loading_screen();
         void loading(int perc);
+        void screenshotSerial();
 
 };
 #endif

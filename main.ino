@@ -17,10 +17,13 @@ void blink(int times, int delay_val);
 
 vector<NtfyMessage> response_list;
 int response_size;
+bool screenshoting = false;
 
 void setup() {
 	ui.loading_screen();
 	Serial.begin(115200);
+	pinMode(WIO_KEY_C, INPUT_PULLUP);
+	
 	if (!SD.begin(SDCARD_SS_PIN, SDCARD_SPI)) {
         while (1);
     }
@@ -42,6 +45,11 @@ void setup() {
 }
 
 void loop() {
+
+	if (digitalRead(WIO_KEY_C) == LOW && !screenshoting){
+		beep(2);
+		ui.screenshotSerial();
+	}
 
 	if (response_size > 0){
 		ui.notificationBadge(response_size);
@@ -69,4 +77,13 @@ void blink(int times, int delay_val){
         digitalWrite(LED_BUILTIN, LOW); 
         delay(delay_val);
     }
+}
+
+void beep(int n){
+  for (int i = 0; i < n; i++){
+    analogWrite(WIO_BUZZER, 64);
+    delay(125);  
+    analogWrite(WIO_BUZZER, 0);
+    delay(75);
+  }
 }
