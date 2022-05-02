@@ -17,11 +17,11 @@ class NtfyMessage {
         String id;
         String message;
         String title;
-        String tags;
+        vector<String> tags;
         int priority;
 
 
-        NtfyMessage(String nid, String ntitle, String nmessage, String ntags, int npriority);
+        NtfyMessage(String nid, String ntitle, String nmessage, vector<String> ntags, int npriority);
         NtfyMessage(String nid, String ntitle, String nmessage, int npriority);
         String str();
 };

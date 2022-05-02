@@ -17,7 +17,6 @@ vector<NtfyMessage> NtfyClient::check_server(){
     Serial.print(url);
     Serial.printf(" Returned %d\n", result);
     
-    JsonVector response_json;
     vector<NtfyMessage> response_list;
 
     if (result == 200) {
@@ -30,29 +29,34 @@ vector<NtfyMessage> NtfyClient::check_server(){
                 append_flag = false;
                 DynamicJsonDocument doc(512);
 
-                //Serial.println(buffer);
                 DeserializationError error = deserializeJson(doc, buffer);
                 if (error) {
                     Serial.print(F("deserialization failed: "));
                     Serial.println(error.f_str());
                     Serial.println(buffer);
                     break;
-                } else
-                response_json.push_back(doc);
-                buffer = "";
-                //String message = response_json.back()["message"];
-                //String message_id = response_json.back()["id"];
-
-                response_list.push_back(
-                    NtfyMessage(
-                        response_json.back()["id"],
-                        response_json.back()["title"],
-                        response_json.back()["message"],
-                        response_json.back()["priority"]
-                    )
-                );
+                } else {
                 
+                    buffer = "";
 
+                    JsonArray tags_array = doc["tags"];
+                    vector<String> tags;
+
+                    for (JsonVariant tag : tags_array) {
+                        tags.push_back(String((const char *)tag));
+                    } 
+                    
+                    response_list.push_back(
+                        NtfyMessage(
+                            doc["id"],
+                            doc["title"],
+                            doc["message"],
+                            tags,
+                            doc["priority"]
+                        )
+                    );
+                
+                }
                 // deserializeJson(doc, doc["message"]);
             }
             else if (c == '{') {
@@ -101,7 +105,7 @@ bool NtfyClient::connect_wifi(bool debug_boot){
   
 };
 
-NtfyMessage::NtfyMessage(String nid, String ntitle, String nmessage, String ntags, int npriority) {
+NtfyMessage::NtfyMessage(String nid, String ntitle, String nmessage, vector<String> ntags, int npriority) {
     id = nid;
     title = ntitle;
     message = nmessage;

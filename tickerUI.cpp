@@ -52,6 +52,13 @@ void TickerUI::setMessageboard(NtfyMessage message){
     tft.print(message.priority);
     tft.print(" ");
     tft.println(message.title);
+
+    for (String tag : message.tags){
+        tft.print(tag);
+        tft.print(" ");
+    }
+    tft.println("");
+
     tft.setTextFont(2);
     tft.println(message.message);
     tft.setTextColor(TFT_WHITE);
