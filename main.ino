@@ -46,18 +46,19 @@ void setup() {
 
 void loop() {
 
-	if (digitalRead(WIO_KEY_C) == LOW && !screenshoting){
-		beep(2);
-		ui.screenshotSerial();
-	}
+	
 
 	if (response_size > 0){
 		ui.notificationBadge(response_size);
 	}
 	
 	for (NtfyMessage response : response_list) {
+		if (digitalRead(WIO_KEY_C) == LOW && !screenshoting){
+			beep(2);
+			ui.screenshotSerial();
+		}
 		ui.setMessageboard(response);
-		delay(5000);    
+		delay(1000);    
 	}
 	
 	blink(3);
