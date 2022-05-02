@@ -34,7 +34,7 @@ void setup() {
 		tft.drawCircle(TFT_HEIGHT/2, TFT_WIDTH/2, 5, TFT_RED);
 	}
 	ui.loading(66);
-	response_list = ntfy.check_server();
+	response_list = ntfy.poll_notifications();
 	response_size = response_list.size();
 	ui.loading(100);
 	tft.fillRect(0, 0, TFT_HEIGHT, TFT_WIDTH, TFT_DARKCYAN);
@@ -54,7 +54,7 @@ void loop() {
 	
 	blink(3);
 	
-	response_list = ntfy.check_server();
+	response_list = ntfy.poll_notifications();
 	response_size = response_list.size();
 }
 

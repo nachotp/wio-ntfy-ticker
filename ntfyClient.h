@@ -34,7 +34,7 @@ class NtfyClient {
         
         NtfyClient();
         bool connect_wifi(bool debug_boot);
-        vector<NtfyMessage> check_server();
+        vector<NtfyMessage> poll_notifications();
 };
 
 #endif
