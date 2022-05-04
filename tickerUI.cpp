@@ -26,44 +26,43 @@ void TickerUI::setHeader() {
     tft.fillScreen(tft.color565(0,0,0));
     tft.setTextColor(TFT_WHITE);
 
-    tft.fillRect(0, 0, TFT_HEIGHT, SPRITE_WIDTH, TFT_DARKCYAN);
+    tft.fillRect(0, 0, TFT_HEIGHT, SPRITE_SIZE, TFT_DARKCYAN);
     tft.fillRect(0, TFT_HEIGHT, TFT_HEIGHT, TFT_WIDTH, TFT_BLACK);
     
-    tft.drawRect(5, 0, SPRITE_WIDTH, SPRITE_WIDTH, TFT_GREENYELLOW);
+    tft.drawRect(5, 0, SPRITE_SIZE, SPRITE_SIZE, TFT_GREENYELLOW);
     drawImage<uint16_t>("mail.bmp", 5, 0);
     tft.setTextSize(1);
 
 }; 
 
 void TickerUI::notificationBadge(int num) {
-    tft.fillCircle(SPRITE_WIDTH/2 + 5, SPRITE_WIDTH/2 + 5, 16, TFT_BLACK);
-    tft.fillCircle(SPRITE_WIDTH/2 + 5, SPRITE_WIDTH/2 + 5, 13, TFT_RED);
-    tft.drawCentreString(String(num), SPRITE_WIDTH/2 + 5, SPRITE_WIDTH/2 - 5, 4);
+    tft.fillCircle(SPRITE_SIZE/2 + 5, SPRITE_SIZE/2 + 5, 16, TFT_BLACK);
+    tft.fillCircle(SPRITE_SIZE/2 + 5, SPRITE_SIZE/2 + 5, 13, TFT_RED);
+    tft.drawCentreString(String(num), SPRITE_SIZE/2 + 5, SPRITE_SIZE/2 - 5, 4);
 };
 
 void TickerUI::setMessageboard(NtfyMessage message){
-    tft.fillRoundRect(0, SPRITE_WIDTH + 2, TFT_HEIGHT - 2, TFT_WIDTH - 2 - SPRITE_WIDTH, 10, TFT_WHITE);
+    tft.fillRoundRect(0, SPRITE_SIZE + 2, TFT_HEIGHT - 2, TFT_WIDTH - 2 - SPRITE_SIZE, 10, TFT_WHITE);
     //tft.drawRoundRect(0, 20, 2*TFT_HEIGHT/3 - 20, TFT_WIDTH - 40, 10, TFT_BLACK);
-    tft.setCursor(5, SPRITE_WIDTH + 10);
+    for (size_t i = message.tags.size(); i > 0; i--) {
+        drawIcon(message.tags[i-1], TFT_HEIGHT - 5 - i*(ICON_SIZE), SPRITE_SIZE + 5);
+    }
+    
+    tft.setCursor(5, SPRITE_SIZE  + 10);
+    
     tft.setTextPadding(25);
     tft.setTextColor(TFT_BLACK);
-    tft.setTextFont(2);
+    tft.setTextFont(4);
     tft.print(message.priority);
     tft.print(" ");
     tft.println(message.title);
-
-    for (String tag : message.tags){
-        tft.print(tag);
-        tft.print(" ");
-    }
-    tft.println("");
-
+    
     tft.setTextFont(2);
     tft.println(message.message);
     tft.setTextColor(TFT_WHITE);
 }
 
-void TickerUI::screenshotSerial(){
+void TickerUI::screenshotSerial() {
     Serial.println("=== BEGIN SCREENSHOT ARRAY ===");
     Serial.print("[");
     for (size_t x = 0; x < TFT_HEIGHT; x++) {
@@ -82,4 +81,9 @@ void TickerUI::screenshotSerial(){
     }
     Serial.print("\n]\n");
     Serial.println("=== END SCREENSHOT ARRAY ===");
+}
+
+void TickerUI::drawIcon(String name, int x, int y) {
+    String path = name + String(".bmp");
+    drawImage<uint16_t>(path.c_str(), x, y);
 }
