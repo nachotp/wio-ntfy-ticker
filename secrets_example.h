@@ -5,5 +5,7 @@
 #define WIFI_PASS "WIFIPASS"
 #define NTFY_DOMAIN "https://ntfy.sh/"
 #define NTFY_TOPIC "<topic_name>"
+#define NTFY_USER "NTFYUSER"
+#define NTFY_PASS "NTFYPASS"
 
 #endif
